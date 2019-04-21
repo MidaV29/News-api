@@ -1,8 +1,8 @@
 <template>
   <div class="SourceSelection">
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-      <div class="collapse navbar-collapse"><!--USD {{article.rate}} EUR {{eur}}-->
-        <ul class="navbar-nav mr-auto"></ul>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto" style="color: white">News Api</ul>
           <input class="form-control mr-sm-2" type="text" v-model="keyWord" v-on:keyup.enter="writeKeyWord" placeholder="Пошук" aria-label="Пошук">
           <button class="btn btn-outline-success my-2 my-sm-0" @click="writeKeyWord" >Пошук</button>
       </div>
@@ -11,6 +11,8 @@
 </template>
 
 <script>
+  let constants = require('../constants');
+
   export default {
       name: "SourceSelection",
       data() {
@@ -19,7 +21,7 @@
         }
       },
       methods: {
-        writeKeyWord: function() {
+        writeKeyWord: async function() {
           let everything_parameters = {
             q: this.keyWord,
             sources: '',
@@ -29,11 +31,11 @@
             to: '',
             language: '',
             sortBy: '',
-            pageSize: null,
-            page: null
+            pageSize: 15,
+            page: null,
+            apiKey: constants.apiKey
           };
-          const endpoints = 'everything?/';
-
+          const endpoints = 'everything?';
           this.$emit('writeKeyWord', endpoints, everything_parameters);
          }
       }
@@ -44,6 +46,6 @@
     width: 250px;
   }
   .navbar{
-    color: darkgrey;
+    background-color: #32473d;
   }
 </style>

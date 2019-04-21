@@ -1,5 +1,12 @@
-import { apiKey, domain} from "./constants";
-import axios from 'axios';
+const axios = require("axios");
 
-const getArticles = async (endpoints, params) => (await axios.get(domain + endpoints, {params: {...params, apiKey}})).data.articles;
-export default getArticles;
+export default function AxiosArticles(param) {
+  this.getArticles = async () => axios.get(param)
+    .then(response => {
+        return response.data.articles;
+    })
+    .catch(error => {
+        console.log(error)
+    })
+}
+

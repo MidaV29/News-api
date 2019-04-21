@@ -1,30 +1,31 @@
 <template>
   <div class="NewsList">
-
     <div class="container container-fluid">
-      <div class="shadow-lg p-3 mb-5 bg-white rounded">
-        <ul class="media-list">
-          <li class="media" v-for="article in articles">
-            <div class="media-left">
-              <a v-bind:href="article.url" target="_blank">
-              <img class="media-object" v-bind:src="article.urlToImage">
-              </a>
-            </div>
-            <div class="media-body">
-             <h4 class="media-heading"><a v-bind:href="article.url" target="_blank">{{article.title}}</a></h4>
-             <h5><i>Автор {{article.author}}</i></h5>
-              <p>{{article.description}}</p>
+      <ul class="media-list">
+        <li class="media" v-for="article in articles">
+           <div class="card mb-3" style="max-width: 900px;">
+              <div class="row no-gutters">
+                <div class="col-md-4">
+                  <img v-bind:src="article.urlToImage" class="card-img" >
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title"><a v-bind:href="article.url" target="_blank">{{article.title}}</a></h5>
+                    <p class="card-text">{{article.description}}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </li>
         </ul>
-      </div>
     </div>
   </div>
 </template>
 
-<script>
-  import getArticles from '../axiosTemplate';
 
+<script>
+  import AxiosArticles from '../axiosTemplate'
+  let constants = require('../constants');
   export default {
       name: "NewsList",
       props: ['endpoints', 'parameters'],
@@ -38,20 +39,28 @@
       },
       methods: {
         updateParameters: async function (endpoints, parameters) {
-          this.articles = await getArticles(endpoints, parameters);
-        },
-        sortPopulation: function () {
-          this.link += '&sortBy=publishedAt'
+          let searchParams;
+          let endpoint;
+          if (parameters.apiKey != null) {
+              searchParams = new URLSearchParams(parameters);
+              endpoint = endpoints
+          }
+          else {
+              searchParams = new URLSearchParams(constants.defaultParams);
+              endpoint = 'everything?'
+          }
+          let axiosArticles = new AxiosArticles(constants.domain + endpoint + searchParams.toString());
+          this.articles = await axiosArticles.getArticles();
         }
       },
-      created: function () {
+      created: async function () {
         this.updateParameters(this.endpoints, this.parameters);
       },
       watch: {
-        parameters: function (adress) {
+        parameters: async function (adress) {
           this.updateParameters(this.endpoints, adress);
         },
-        endpoints: function (adress) {
+        endpoints: async function (adress) {
           this.updateParameters(adress, this.parameters);
         }
       }
@@ -60,18 +69,26 @@
 
 <style scoped>
 
-  .media-object {
-    width: 150px;
-    padding-right: 10px;
-
+  .card-img {
+    width:250px;
+    height:149px;
   }
-  h5 {
-    font-size: small;
+  .media-list {
+    padding-top: 15px;
+    height: 2550px;
   }
-  .media {
-    scroll-padding-top: 50px;
-    border-top: 1px solid lightgray;
-    padding-top: 20px;
-    border-color: brown;
+  NewsList {
+    height: 2500px;
+  }
+  .card-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+  }
+  .card {
+    width: 100%;
+    min-height: 150px;
+    max-height: 150px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
   }
 </style>

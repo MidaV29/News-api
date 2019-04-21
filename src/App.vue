@@ -14,6 +14,7 @@
         <div class="col-3">
           <NewsBoard></NewsBoard>
         </div>
+        <Footer></Footer>
       </div>
   </div>
 </template>
@@ -23,6 +24,7 @@ import SourceSelection from './components/SourceSelection'
 import NewsList from './components/NewsList'
 import NewsBoard from './components/NewsBoard'
 import CategoryBoard from './components/CategoryBoard'
+import Footer from "@/components/Footer";
 
 
 
@@ -32,20 +34,22 @@ export default {
     SourceSelection,
     NewsList,
     NewsBoard,
-    CategoryBoard
+    CategoryBoard,
+    Footer
   },
   data () {
     return {
       url: '',
-      parameters: ''
+      parameters: '',
+      endpoints: ''
     }
   },
   methods: {
-    selectCategory: function (endpoints, category) {
+    selectCategory: async function (endpoints, category) {
       this.endpoints = endpoints;
       this.parameters = category
     },
-    writeKeyWord: function (endpoints, keyWord) {
+    writeKeyWord: async function (endpoints, keyWord) {
       this.endpoints = endpoints;
       this.parameters = keyWord
     }
